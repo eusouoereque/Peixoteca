@@ -17,7 +17,9 @@
         </li>
       </ul>
       <div class="d-flex">
-        <button class="btn btn-outline-light fs-5">Login</button>
+        <a href="../login/index.php">
+          <button type="button" class="btn btn-outline-light fs-5">Login</button>
+        </a>
       </div>
     </div>
   </div>
