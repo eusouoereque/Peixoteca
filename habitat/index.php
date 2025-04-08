@@ -4,6 +4,10 @@
     require_once "../db/conn.php";
 ?>
 
+<div class="container">
+    <h1 class="text-center">Habitat</h1>
+</div>
+
 
 
 
