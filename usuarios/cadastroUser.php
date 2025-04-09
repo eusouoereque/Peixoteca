@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql->execute([$usuario]);
 
     if ($sql->rowCount() > 0) {
-        $mensagem = "Usuário já cadastrado.";
+        $mensagem = "Esse nome de usuario já foi utilizado!";
     } else {
         $sql = $pdo->prepare("INSERT INTO usuarios (nome, login, senha) VALUES (?, ?, ?)");
         if ($sql->execute([$nome, $usuario, $senha])) {
