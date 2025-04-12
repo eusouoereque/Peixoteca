@@ -8,7 +8,9 @@
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = addslashes($_POST['usuario']);
-        $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+        //$senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+        $senha = $_POST['senha'];
+
         
         $sql = "SELECT u.senha AS senha FROM usuarios u WHERE u.login = '$username';";
         $sql = $pdo->query($sql);
@@ -47,7 +49,7 @@
                 <input type="password" name="senha" placeholder="Insira sua senha" class="form-control" required>
             </div>
             <div class="text-center">
-                <p>Ainda não possui uma conta? <a href="#">Cadastre-se aqui!</a> </p>
+                <p>Ainda não possui uma conta? <a href="../usuarios/cadastroUser.php">Cadastre-se aqui!</a> </p>
                 <?php
                     if ($mensagem) echo '<p class="text-danger">'.$mensagem.'</a>'; 
                 ?>
