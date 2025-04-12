@@ -10,6 +10,7 @@
         $username = addslashes($_POST['usuario']);
         //$senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
         $senha = $_POST['senha'];
+
         
         $sql = "SELECT u.senha AS senha FROM usuarios u WHERE u.login = '$username';";
         $sql = $pdo->query($sql);
