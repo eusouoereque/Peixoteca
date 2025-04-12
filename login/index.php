@@ -1,10 +1,23 @@
 <?php 
     include "../components/header.php";
     require_once "../db/conn.php";
+    require_once "../helpers.php";
 
-    session_start();
-    $_SESSION['usuario_logado'] = false;
     $mensagem = '';
+    $cor = 'danger';
+
+    if ($_SERVER['REQUEST_METHOD'] == 'GET'){
+        if (usuarioEstaLogado()) {
+            header('Location: ./logout.php');
+            return;
+        }
+
+        if (isset($_GET['msg']) && $_GET['msg'] == 'logout') {
+            $mensagem = 'Logout efetuado com sucesso!';
+            $cor = 'success';
+        }
+    }
+    
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = addslashes($_POST['usuario']);
@@ -12,12 +25,12 @@
         $senha = $_POST['senha'];
 
         
-        $sql = "SELECT u.senha AS senha FROM usuarios u WHERE u.login = '$username';";
+        $sql = "SELECT u.nome AS nome, u.senha AS senha FROM usuarios u WHERE u.login = '$username';";
         $sql = $pdo->query($sql);
         $user = $sql->fetch(PDO::FETCH_ASSOC);
         
         if ($user && password_verify($senha, $user['senha'])) {
-            $_SESSION['usuario_logado'] = true;
+            $_SESSION['usuario_logado'] = $user['nome'];
             header('Location: ../animais/index.php');
         } else {
             $mensagem = 'Usuário ou senha incorretos.';
@@ -51,7 +64,7 @@
             <div class="text-center">
                 <p>Ainda não possui uma conta? <a href="../usuarios/cadastroUser.php">Cadastre-se aqui!</a> </p>
                 <?php
-                    if ($mensagem) echo '<p class="text-danger">'.$mensagem.'</a>'; 
+                    if ($mensagem) echo '<p class="text-'.$cor.'">'.$mensagem.'</a>'; 
                 ?>
             </div>
             <div class="form-group text-center my-4">
