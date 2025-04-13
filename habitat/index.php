@@ -25,7 +25,7 @@ if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    header("Location: habitats.php");
+    header("Location: index.php");
     exit;
 }
 
@@ -44,7 +44,7 @@ if ($usuarioLogado && isset($_GET['delete'])) {
         echo "<script>alert('Não é possível excluir este habitat porque existem animais vinculados a ele.');</script>";
     }
 
-    header("Location: habitats.php");
+    header("Location: index.php");
     exit;
 }
 
@@ -102,7 +102,7 @@ if ($usuarioLogado && isset($_GET['edit'])) {
           <?= $habitatEditar ? 'Salvar Alterações' : 'Cadastrar' ?>
         </button>
         <?php if ($habitatEditar): ?>
-          <a href="habitats.php" class="btn btn-secondary mt-2 w-100">Cancelar</a>
+          <a href="index.php" class="btn btn-secondary mt-2 w-100">Cancelar</a>
         <?php endif; ?>
       </form>
     </div>
