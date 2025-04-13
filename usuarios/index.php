@@ -2,6 +2,13 @@
     include "../components/header.php";
     include "../components/nav.php";
     require_once "../db/conn.php";
+    
+    if (!isset($_SESSION['usuario_logado'])) {
+        header("Location: ../login/index.php");
+        exit;
+    }
+
+    
 ?>
 <div class="container">
     <h1 class="text-center">Usuários</h1>
@@ -49,8 +56,6 @@
             </tbody>
         </table>
     </div>
-
-
 
 <?php
     include "../components/footer.php";
