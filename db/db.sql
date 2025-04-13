@@ -35,3 +35,14 @@ ALTER TABLE `animais` ADD FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (
 ALTER TABLE `animais` ADD FOREIGN KEY (`id_criador`) REFERENCES `usuarios` (`id`);
 
 ALTER TABLE `animais` ADD FOREIGN KEY (`id_habitat`) REFERENCES `habitats` (`id`);
+
+INSERT INTO categorias (descricao) VALUES
+('Peixes'),
+('Crustáceos'),
+('Equinodermos'),
+('Mamíferos'),
+('Répteis'),
+('Vermes marinhos'),
+('Moluscos'),
+('Esponjas'),
+('Rotíferos');
