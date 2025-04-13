@@ -9,12 +9,11 @@
     if ($_SERVER['REQUEST_METHOD'] == 'GET'){
         if (usuarioEstaLogado()) {
             header('Location: ./logout.php');
-            return;
+            exit;
         }
 
-        if (isset($_GET['msg']) && $_GET['msg'] == 'logout') {
-            $mensagem = 'Logout efetuado com sucesso!';
-            $cor = 'success';
+        if (isset($_GET['msg'])) {
+            $mensagem = mensagemLogin($_GET['msg']);
         }
     }
     
@@ -25,13 +24,15 @@
         $senha = $_POST['senha'];
 
         
-        $sql = "SELECT u.nome AS nome, u.senha AS senha FROM usuarios u WHERE u.login = '$username';";
+        $sql = "SELECT u.id as id, u.login AS nome, u.senha AS senha FROM usuarios u WHERE u.login = '$username';";
         $sql = $pdo->query($sql);
         $user = $sql->fetch(PDO::FETCH_ASSOC);
         
         if ($user && password_verify($senha, $user['senha'])) {
-            $_SESSION['usuario_logado'] = $user['nome'];
+            $_SESSION['id_logado'] = trim($user['id']);
+            $_SESSION['usuario_logado'] = trim($user['nome']);
             header('Location: ../animais/index.php');
+            exit;
         } else {
             $mensagem = 'Usuário ou senha incorretos.';
         }

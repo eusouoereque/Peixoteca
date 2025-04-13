@@ -1,55 +1,42 @@
 <?php 
-    include "../components/header.php";
-    include "../components/nav.php";
+    session_start();
+
     require_once "../db/conn.php";
-    
-    if (!isset($_SESSION['usuario_logado'])) {
-        header("Location: ../login/index.php");
+    require_once "../helpers.php";
+
+    if (isset($_GET['id']) && empty($_GET['id']) == false) {
+        $id = $_GET['id'];
+        // Excluir outro usuario
+        if ($_SESSION['id_logado'] && $id != $_SESSION['id_logado']) {
+            header('Location: ./index.html');
+            exit;
+        }
+
+        //Verifica se não criou animais
+        $sql = "SELECT COUNT(*) FROM animais
+                WHERE id_criador = '$id'";
+        $query = $pdo->query($sql);
+        $total = $query->fetchColumn();
+        if ($total > 0) {
+            echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=index.php'>
+                    <script type=\"text/javascript\">
+                        alert(\"Usuário possui animais cadastrados, não pode ser deletado!\");
+                    </script>";
+            exit;
+        }
+        // Exclui usuario
+        $sql = "DELETE FROM usuarios WHERE id = $id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        
+        echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=../login/logout.php'>
+                    <script type=\"text/javascript\">
+                        alert(\"Usuário deletado com sucesso!\");
+                    </script>";
+        exit;
+    } else {
+        header('Location: ../usuarios/');
         exit;
     }
-?>
-<div class="container">
-    <h1 class="text-center">Usuários</h1>
-</div>
-
-<div class="container mt-3">
-    <h2>Usuários -
-        <!-- Botão para cadastrar novo usuário -->
-        <a href="cadastroUser.php" class="btn btn-primary">Novo Usuário</a>
-    </h2>
-    <table class="table table-dark table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Login</th>
-                <th>Ação</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $sql = "SELECT * FROM usuarios";
-            $sql = $pdo->query($sql);
-
-            if ($sql->rowCount() > 0) {
-                foreach ($sql->fetchAll() as $usuarios) {
-                    echo '<tr>';
-                    echo '<td>' . $usuarios['id'] . '</td>';
-                    echo '<td>' . $usuarios['nome'] . '</td>';
-                    echo '<td>' . $usuarios['login'] . '</td>';
-                    echo '<td>
-                        <a href="editarUser.php?id=' . $usuarios['id'] . '">Editar</a>
-                        -
-                        <a href="excluirUser.php?id=' . $usuarios['id'] . '">Excluir</a>
-                        </td>';
-                    echo '</tr>';
-                }
-            }
-            ?>
-        </tbody>
-    </table>
-</div>
-
-<?php
-    include "../components/footer.php";
+    
 ?>

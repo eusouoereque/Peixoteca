@@ -3,77 +3,75 @@
     include "../components/nav.php";
     require_once "../db/conn.php";
 
-    $usuarioLogado = isset($_SESSION['usuario_logado']) ? $_SESSION['usuario_logado'] : null;
-?>
+    $usuarioLogado = usuarioEstaLogado();
 
-<?php
-// Cadastrar ou Editar habitat (somente se logado)
-if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $descricao = trim($_POST['descricao']);
+    // Cadastrar ou Editar habitat (somente se logado)
+    if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $descricao = trim($_POST['descricao']);
 
-    if (!empty($_POST['id'])) {
-        $id = intval($_POST['id']);
-        $stmt = $pdo->prepare("UPDATE habitats SET descricao = :descricao WHERE id = :id");
-        $stmt->execute([
-            'descricao' => $descricao,
-            'id' => $id
-        ]);
-    } else {
-        if (!empty($descricao)) {
-            $stmt = $pdo->prepare("INSERT INTO habitats (descricao) VALUES (:descricao)");
-            $stmt->execute(['descricao' => $descricao]);
+        if (!empty($_POST['id'])) {
+            $id = intval($_POST['id']);
+            $stmt = $pdo->prepare("UPDATE habitats SET descricao = :descricao WHERE id = :id");
+            $stmt->execute([
+                'descricao' => $descricao,
+                'id' => $id
+            ]);
+        } else {
+            if (!empty($descricao)) {
+                $stmt = $pdo->prepare("INSERT INTO habitats (descricao) VALUES (:descricao)");
+                $stmt->execute(['descricao' => $descricao]);
+            }
         }
+
+        header("Location: index.php");
+        exit;
     }
 
-    header("Location: index.php");
-    exit;
-}
+    // Excluir habitat (somente se logado)
+    if ($usuarioLogado && isset($_GET['delete'])) {
+        $id = intval($_GET['delete']);
 
-// Excluir habitat (somente se logado)
-if ($usuarioLogado && isset($_GET['delete'])) {
-    $id = intval($_GET['delete']);
+        $check = $pdo->prepare("SELECT COUNT(*) FROM animais WHERE id_habitat = :id");
+        $check->execute(['id' => $id]);
+        $temAnimais = $check->fetchColumn();
 
-    $check = $pdo->prepare("SELECT COUNT(*) FROM animais WHERE id_habitat = :id");
-    $check->execute(['id' => $id]);
-    $temAnimais = $check->fetchColumn();
+        if ($temAnimais == 0) {
+            $stmt = $pdo->prepare("DELETE FROM habitats WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+        } else {
+            echo "<script>alert('Não é possível excluir este habitat porque existem animais vinculados a ele.');</script>";
+        }
 
-    if ($temAnimais == 0) {
-        $stmt = $pdo->prepare("DELETE FROM habitats WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-    } else {
-        echo "<script>alert('Não é possível excluir este habitat porque existem animais vinculados a ele.');</script>";
+        header("Location: index.php");
+        exit;
     }
 
-    header("Location: index.php");
-    exit;
-}
+    // Buscar habitats
+    $sql = "SELECT * FROM habitats ORDER BY descricao";
+    $stmt = $pdo->query($sql);
+    $listaHabitats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Buscar habitats
-$sql = "SELECT * FROM habitats ORDER BY descricao";
-$stmt = $pdo->query($sql);
-$listaHabitats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Buscar animais por habitat
+    $sqlAnimais = "SELECT h.id AS habitat_id, h.descricao AS habitat, a.nome_popular, a.nome_cientifico, a.quantidade
+                  FROM habitats h
+                  LEFT JOIN animais a ON a.id_habitat = h.id
+                  ORDER BY h.descricao";
+    $stmtAnimais = $pdo->query($sqlAnimais);
+    $dados = $stmtAnimais->fetchAll(PDO::FETCH_ASSOC);
 
-// Buscar animais por habitat
-$sqlAnimais = "SELECT h.id AS habitat_id, h.descricao AS habitat, a.nome_popular, a.nome_cientifico, a.quantidade
-               FROM habitats h
-               LEFT JOIN animais a ON a.id_habitat = h.id
-               ORDER BY h.descricao";
-$stmtAnimais = $pdo->query($sqlAnimais);
-$dados = $stmtAnimais->fetchAll(PDO::FETCH_ASSOC);
+    $habitatsAnimais = [];
+    foreach ($dados as $linha) {
+        $habitatsAnimais[$linha['habitat']][] = $linha;
+    }
 
-$habitatsAnimais = [];
-foreach ($dados as $linha) {
-    $habitatsAnimais[$linha['habitat']][] = $linha;
-}
-
-// Ver se estamos editando
-$habitatEditar = null;
-if ($usuarioLogado && isset($_GET['edit'])) {
-    $idEdit = intval($_GET['edit']);
-    $stmt = $pdo->prepare("SELECT * FROM habitats WHERE id = :id");
-    $stmt->execute(['id' => $idEdit]);
-    $habitatEditar = $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    // Ver se estamos editando
+    $habitatEditar = null;
+    if ($usuarioLogado && isset($_GET['edit'])) {
+        $idEdit = intval($_GET['edit']);
+        $stmt = $pdo->prepare("SELECT * FROM habitats WHERE id = :id");
+        $stmt->execute(['id' => $idEdit]);
+        $habitatEditar = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 ?>
 
 <!DOCTYPE html>

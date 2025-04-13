@@ -4,10 +4,7 @@ include "../components/nav.php";
 require_once "../db/conn.php";
 require_once "../helpers.php";
 
-if (!usuarioEstaLogado()) {
-    header("Location: ../login.php");
-    exit;
-}
+apenasLogado();
 
 $id = $_GET['id'] ?? null;
 

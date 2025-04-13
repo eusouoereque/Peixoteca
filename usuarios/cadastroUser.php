@@ -1,29 +1,35 @@
-
 <?php
+include "../components/header.php";
 require_once "../db/conn.php";
-require "../components/header.php";
 
 $mensagem = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = addslashes($_POST['nome']);
     $usuario = addslashes($_POST['usuario']);
-    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
-
-    // Verifica se o usuário já existe
-    $sql = $pdo->prepare("SELECT * FROM usuarios WHERE login = ?");
-    $sql->execute([$usuario]);
-
-    if ($sql->rowCount() > 0) {
-        $mensagem = "Esse nome de usuario já foi utilizado!";
-    } else {
-        $sql = $pdo->prepare("INSERT INTO usuarios (nome, login, senha) VALUES (?, ?, ?)");
-        if ($sql->execute([$nome, $usuario, $senha])) {
-            $mensagem = "Cadastro realizado com sucesso!";
+    
+    if ($_POST['senha1'] == $_POST['senha2']) {
+        $senha = password_hash($_POST['senha1'], PASSWORD_DEFAULT);
+    
+        // Verifica se o usuário já existe
+        $sql = $pdo->prepare("SELECT * FROM usuarios WHERE login = ?");
+        $sql->execute([$usuario]);
+    
+        if ($sql->rowCount() > 0) {
+            $mensagem = "Esse nome de usuario já foi utilizado!";
         } else {
-            $mensagem = "Erro ao cadastrar. Tente novamente.";
+            $sql = $pdo->prepare("INSERT INTO usuarios (nome, login, senha) VALUES (?, ?, ?)");
+            if ($sql->execute([$nome, $usuario, $senha])) {
+                header('Location: ../login/?msg=cadastro');
+                exit;
+            } else {
+                $mensagem = "Erro ao cadastrar. Tente novamente.";
+            }
         }
+    } else {
+        $mensagem = 'Os campos de senha não são idênticos';
     }
+
 }
 ?>
 <div class="d-flex min-vh-100">
@@ -47,9 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group my-2">
-                <label for="senha" class="form-label">Senha</label>
-                <input type="password" name="senha" class="form-control" placeholder="Crie uma senha" required>
+                <label for="senha1" class="form-label">Senha</label>
+                <input type="password" name="senha1" class="form-control" placeholder="Crie uma senha" required>
             </div>
+
+            <div class="form-group my-2">
+                <label for="senha2" class="form-label">Confirmar Senha</label>
+                <input type="password" name="senha2" class="form-control" placeholder="Confirme sua senha" required>
+            </div>
+
 
             <div class="text-center my-3">
                 <p>Já tem uma conta? <a href="../login/">Faça login</a></p>
