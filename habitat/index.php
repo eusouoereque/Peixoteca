@@ -2,16 +2,15 @@
     include "../components/header.php";
     include "../components/nav.php";
     require_once "../db/conn.php";
+
+    $usuarioLogado = isset($_SESSION['usuario_logado']) ? $_SESSION['usuario_logado'] : null;
 ?>
 
 <?php
-
-// Cadastrar novo habitat
-// Cadastrar ou Editar habitat
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Cadastrar ou Editar habitat (somente se logado)
+if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $descricao = trim($_POST['descricao']);
 
-    // EDITAR
     if (!empty($_POST['id'])) {
         $id = intval($_POST['id']);
         $stmt = $pdo->prepare("UPDATE habitats SET descricao = :descricao WHERE id = :id");
@@ -20,23 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'id' => $id
         ]);
     } else {
-        // INSERIR NOVO
         if (!empty($descricao)) {
             $stmt = $pdo->prepare("INSERT INTO habitats (descricao) VALUES (:descricao)");
             $stmt->execute(['descricao' => $descricao]);
         }
     }
 
-    // Evita reenvio
-    header("Location: index.php");
+    header("Location: habitats.php");
     exit;
 }
 
-// EXCLUIR habitat
-if (isset($_GET['delete'])) {
+// Excluir habitat (somente se logado)
+if ($usuarioLogado && isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
 
-    // Verifica se há animais vinculados
     $check = $pdo->prepare("SELECT COUNT(*) FROM animais WHERE id_habitat = :id");
     $check->execute(['id' => $id]);
     $temAnimais = $check->fetchColumn();
@@ -48,7 +44,7 @@ if (isset($_GET['delete'])) {
         echo "<script>alert('Não é possível excluir este habitat porque existem animais vinculados a ele.');</script>";
     }
 
-    header("Location: index.php");
+    header("Location: habitats.php");
     exit;
 }
 
@@ -72,7 +68,7 @@ foreach ($dados as $linha) {
 
 // Ver se estamos editando
 $habitatEditar = null;
-if (isset($_GET['edit'])) {
+if ($usuarioLogado && isset($_GET['edit'])) {
     $idEdit = intval($_GET['edit']);
     $stmt = $pdo->prepare("SELECT * FROM habitats WHERE id = :id");
     $stmt->execute(['id' => $idEdit]);
@@ -91,6 +87,7 @@ if (isset($_GET['edit'])) {
 <div class="container mt-5">
   <h1 class="text-center mb-4">Habitats Marinhos</h1>
 
+  <?php if ($usuarioLogado): ?>
   <!-- Formulário -->
   <div class="card mx-auto mb-4" style="max-width: 500px;">
     <div class="card-body">
@@ -110,6 +107,7 @@ if (isset($_GET['edit'])) {
       </form>
     </div>
   </div>
+  <?php endif; ?>
 
   <!-- Lista com opções de editar/excluir -->
   <div class="row justify-content-center">
@@ -133,10 +131,12 @@ if (isset($_GET['edit'])) {
                 <p class="text-muted mb-0">Nenhum animal neste habitat.</p>
               <?php endif; ?>
             </div>
-            <div class="ms-3 text-end">
-              <a href="?edit=<?= $habitat['id'] ?>" class="btn btn-sm btn-outline-primary">Editar</a>
-              <a href="?delete=<?= $habitat['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir este habitat?')">Excluir</a>
-            </div>
+            <?php if ($usuarioLogado): ?>
+              <div class="ms-3 text-end">
+                <a href="?edit=<?= $habitat['id'] ?>" class="btn btn-sm btn-outline-primary">Editar</a>
+                <a href="?delete=<?= $habitat['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir este habitat?')">Excluir</a>
+              </div>
+            <?php endif; ?>
           </div>
         </div>
       <?php endforeach; ?>
@@ -151,4 +151,3 @@ if (isset($_GET['edit'])) {
 <?php
     include "../components/footer.php";
 ?>
-

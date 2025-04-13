@@ -1,27 +1,55 @@
+<?php 
+    include "../components/header.php";
+    include "../components/nav.php";
+    require_once "../db/conn.php";
+    
+    if (!isset($_SESSION['usuario_logado'])) {
+        header("Location: ../login/index.php");
+        exit;
+    }
+?>
+<div class="container">
+    <h1 class="text-center">Usuários</h1>
+</div>
+
+<div class="container mt-3">
+    <h2>Usuários -
+        <!-- Botão para cadastrar novo usuário -->
+        <a href="cadastroUser.php" class="btn btn-primary">Novo Usuário</a>
+    </h2>
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Login</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $sql = "SELECT * FROM usuarios";
+            $sql = $pdo->query($sql);
+
+            if ($sql->rowCount() > 0) {
+                foreach ($sql->fetchAll() as $usuarios) {
+                    echo '<tr>';
+                    echo '<td>' . $usuarios['id'] . '</td>';
+                    echo '<td>' . $usuarios['nome'] . '</td>';
+                    echo '<td>' . $usuarios['login'] . '</td>';
+                    echo '<td>
+                        <a href="editarUser.php?id=' . $usuarios['id'] . '">Editar</a>
+                        -
+                        <a href="excluirUser.php?id=' . $usuarios['id'] . '">Excluir</a>
+                        </td>';
+                    echo '</tr>';
+                }
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
 <?php
-
-// Conexão com o BD
-require_once "../db/conn.php";
-
-// Verifica se o Id veio com valor
-if (isset($_GET['id']) && empty($_GET['id']) == false) {
-    // Grava o Id em uma variável
-    $id = addslashes($_GET['id']);
-    // Delete SQL
-    $sql = "DELETE FROM usuarios WHERE id = '$id'";
-    // PDO executa o Delete
-    $sql = $pdo->query($sql);
-    // Confirma a exclusão
-    echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=index.php'>
-    <script type=\"text/javascript\">
-        alert(\"Exclusão realizada com sucesso!\");
-    </script>";
-} else {
-    // Retorna que deu erro
-    echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=index.php'>
-    <script type=\"text/javascript\">
-        alert(\"Algo deu errado!\");
-    </script>";
-}
-
+    include "../components/footer.php";
 ?>
