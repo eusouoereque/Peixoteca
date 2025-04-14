@@ -27,9 +27,14 @@
         exit;
     }
 
+
     // Excluir habitat (somente se logado)
     if ($usuarioLogado && isset($_GET['delete'])) {
         $id = intval($_GET['delete']);
+        header("Location: index.php");
+        exit;
+    }
+
 
         $check = $pdo->prepare("SELECT COUNT(*) FROM animais WHERE id_habitat = :id");
         $check->execute(['id' => $id]);
@@ -63,15 +68,15 @@
     foreach ($dados as $linha) {
         $habitatsAnimais[$linha['habitat']][] = $linha;
     }
+// Ver se estamos editando
+$habitatEditar = null;
+if ($usuarioLogado && isset($_GET['edit'])) {
+    $idEdit = intval($_GET['edit']);
+    $stmt = $pdo->prepare("SELECT * FROM habitats WHERE id = :id");
+    $stmt->execute(['id' => $idEdit]);
+    $habitatEditar = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-    // Ver se estamos editando
-    $habitatEditar = null;
-    if ($usuarioLogado && isset($_GET['edit'])) {
-        $idEdit = intval($_GET['edit']);
-        $stmt = $pdo->prepare("SELECT * FROM habitats WHERE id = :id");
-        $stmt->execute(['id' => $idEdit]);
-        $habitatEditar = $stmt->fetch(PDO::FETCH_ASSOC);
-    }
 ?>
 
 <!DOCTYPE html>
