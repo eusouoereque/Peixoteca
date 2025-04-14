@@ -31,7 +31,7 @@
         
         echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=../login/logout.php'>
                     <script type=\"text/javascript\">
-                        alert(\"Usuário deletado com sucesso!\");
+                        alert(\"Usuário deletado, encerrando a sessão...\");
                     </script>";
         exit;
     } else {

@@ -7,17 +7,10 @@
 ?>
 
 <div class="container my-4">
-    <h1 class="text-center mb-4">Usuários</h1>
-    
-    <?php if (usuarioEstaLogado()): ?>
-        <div class="text-end mb-3">
-            <!-- Botão para cadastrar novo usuário -->
-            <a href="cadastroUser.php" class="btn btn-success mb-3">Novo Usuário</a>
-        </h2>
-    <?php endif; ?>
+    <h1 class="text-center mb-5">Usuários</h1>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
+    <div class="table-responsive mt-5">
+        <table class="table table-striped table-bordered text-center">
             <thead class="table-primary">
                 <tr>
                     <th>ID</th>
@@ -41,7 +34,7 @@
                         <?php if ($usuarios['id'] == $_SESSION['id_logado']): ?>
                             <td>
                                 <a class="btn btn-warning btn-sm"
-                                 href="./editarUser.php?id=<?php echo $usuarios['id'] ?>">Editar</a>
+                                href="./editarUser.php?id=<?php echo $usuarios['id'] ?>">Editar</a>
                                 <a class="btn btn-danger btn-sm"
                                    onclick="return confirm('Deseja realmente excluir a sua conta?')"
                                    href="./excluirUser.php?id=<?php echo $usuarios['id'] ?>">Excluir</a>
