@@ -16,7 +16,7 @@ $categorias = $pdo->query("SELECT * FROM categorias")->fetchAll(PDO::FETCH_ASSOC
 $habitats = $pdo->query("SELECT * FROM habitats")->fetchAll(PDO::FETCH_ASSOC);
 
 // Busca ID do criador pelo nome
-$stmt = $pdo->prepare("SELECT id FROM usuarios WHERE nome = ?");
+$stmt = $pdo->prepare("SELECT id FROM usuarios WHERE login = ?");
 $stmt->execute([$criador]);
 $usuario = $stmt->fetch();
 $id_criador = $usuario['id'] ?? null;

@@ -13,7 +13,7 @@
     function mensagemLogin(string $msg): string {
         switch ($msg) {
             case 'logout':
-                return 'Logout efetuado com sucesso!';
+                return 'Logout efetuado!';
             case 'cadastro':
                 return 'Cadastro efetuado com sucesso!';
             default:

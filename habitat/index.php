@@ -132,7 +132,11 @@
             <?php if ($usuarioLogado): ?>
               <div class="ms-3 text-end">
                 <a href="?edit=<?= $habitat['id'] ?>" class="btn btn-sm btn-outline-primary">Editar</a>
-                <a href="?delete=<?= $habitat['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir este habitat?')">Excluir</a>
+                <a href="?delete=<?= $habitat['id'] ?>"
+                   class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('Tem certeza que deseja excluir esse habitat?')">
+                   Excluir
+                </a>
               </div>
             <?php endif; ?>
           </div>

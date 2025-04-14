@@ -14,6 +14,9 @@
 
         if (isset($_GET['msg'])) {
             $mensagem = mensagemLogin($_GET['msg']);
+
+            if ($_GET['msg'] == 'cadastro')
+                $cor = 'success';
         }
     }
     
