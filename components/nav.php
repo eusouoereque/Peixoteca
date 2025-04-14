@@ -1,3 +1,7 @@
+<?php
+  require_once '../helpers.php';
+?>
+
 <nav class="navbar navbar-expand-lg bg-primary mb-5">
   <div class="container-fluid">
     <a href="../animais/"><img style="width: 70px; " src="../img/Logo.png" alt="logo"></a>
@@ -12,13 +16,14 @@
         <li class="nav-item">
           <a class="nav-link text-light fs-5" href="../habitat/">Habitats</a>
         </li>
+        <?php if (usuarioEstaLogado()): ?>
         <li class="nav-item">
           <a class="nav-link text-light fs-5" href="../usuarios/">Usuários</a>
         </li>
+        <?php endif ?>
       </ul>
       <div class="d-flex">
         <?php
-          require_once '../helpers.php';
           if (!usuarioEstaLogado()) {
             echo '<a href="../login/">
                     <button type="button" class="btn btn-outline-light fs-5">Login</button>

@@ -32,8 +32,8 @@ $animais = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     <?php if (count($animais) > 0): ?>
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
-                <thead class="table-dark">
-                    <tr>
+                <thead class="table-primary">
+                    <tr> 
                         <th>Nome Popular</th>
                         <th>Nome Científico</th>
                         <th>Categoria</th>

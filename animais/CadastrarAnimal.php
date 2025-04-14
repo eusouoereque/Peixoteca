@@ -6,10 +6,7 @@
 ?>
 
 <?php
-if (!usuarioEstaLogado()) {
-    header("Location: ../login.php");
-    exit;
-}
+apenasLogado();
 
 
 $criador = $_SESSION['usuario_logado'] ?? '';
@@ -19,19 +16,20 @@ $categorias = $pdo->query("SELECT * FROM categorias")->fetchAll(PDO::FETCH_ASSOC
 $habitats = $pdo->query("SELECT * FROM habitats")->fetchAll(PDO::FETCH_ASSOC);
 
 // Busca ID do criador pelo nome
-$stmt = $pdo->prepare("SELECT id FROM usuarios WHERE nome = ?");
+$stmt = $pdo->prepare("SELECT id FROM usuarios WHERE login = ?");
 $stmt->execute([$criador]);
 $usuario = $stmt->fetch();
 $id_criador = $usuario['id'] ?? null;
 
 $mensagem = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome_popular = $_POST["nome_popular"];
-    $nome_cientifico = $_POST["nome_cientifico"];
-    $id_categoria = $_POST["id_categoria"];
-    $id_habitat = $_POST["id_habitat"];
-    $localizacao = $_POST["localizacao"];
-    $quantidade = $_POST["quantidade"];
+    $nome_popular = addslashes($_POST["nome_popular"]);
+    $nome_cientifico = addslashes($_POST["nome_cientifico"]);
+    $id_categoria = addslashes($_POST["id_categoria"]);
+    $id_habitat = addslashes($_POST["id_habitat"]);
+    $localizacao = addslashes($_POST["localizacao"]);
+    $quantidade = addslashes($_POST["quantidade"]);
+    
 
     $sql = "INSERT INTO animais 
             (nome_popular, nome_cientifico, id_categoria, id_criador, id_habitat, localizacao, quantidade) 

@@ -47,11 +47,6 @@ INSERT INTO categorias (descricao) VALUES
 ('Esponjas'),
 ('Rotíferos');
 
--- Inserir usuários (criadores)
-INSERT INTO usuarios (nome, login, senha) VALUES
-('Admin', 'admin', '1234'),
-
-
 -- Inserir habitats
 INSERT INTO habitats (descricao) VALUES
 ('Recifes de Coral'),
@@ -79,4 +74,5 @@ INSERT INTO animais (
 ('Camarão-Rosa', 'Farfantepenaeus paulensis', 2, 1, 3, 'Manguezais e estuários brasileiros', 30),
 ('Lula-Gigante', 'Architeuthis dux', 7, 1, 5, 'Profundezas do oceano Atlântico', 1),
 ('Rotífero-Marinho', 'Brachionus plicatilis', 9, 1, 3, 'Águas salobras e marinhas costeiras', 1000),
+
 ('Nereis', 'Nereis diversicolor', 6, 1, 3, 'Sedimentos de manguezais e estuários', 40);
