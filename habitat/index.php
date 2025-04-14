@@ -6,44 +6,27 @@
     $usuarioLogado = usuarioEstaLogado();
     $usuarioLogado = usuarioEstaLogado();
 
-    // Cadastrar ou Editar habitat (somente se logado)
-    if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
-        $descricao = trim($_POST['descricao']);
-    // Cadastrar ou Editar habitat (somente se logado)
-    if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
-        $descricao = trim($_POST['descricao']);
+     // Cadastrar ou Editar habitat (somente se logado)
+     if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
+      $descricao = trim($_POST['descricao']);
 
-        if (!empty($_POST['id'])) {
-            $id = intval($_POST['id']);
-            $stmt = $pdo->prepare("UPDATE habitats SET descricao = :descricao WHERE id = :id");
-            $stmt->execute([
-                'descricao' => $descricao,
-                'id' => $id
-            ]);
-        } else {
-            if (!empty($descricao)) {
-                $stmt = $pdo->prepare("INSERT INTO habitats (descricao) VALUES (:descricao)");
-                $stmt->execute(['descricao' => $descricao]);
-            }
-        }
-        if (!empty($_POST['id'])) {
-            $id = intval($_POST['id']);
-            $stmt = $pdo->prepare("UPDATE habitats SET descricao = :descricao WHERE id = :id");
-            $stmt->execute([
-                'descricao' => $descricao,
-                'id' => $id
-            ]);
-        } else {
-            if (!empty($descricao)) {
-                $stmt = $pdo->prepare("INSERT INTO habitats (descricao) VALUES (:descricao)");
-                $stmt->execute(['descricao' => $descricao]);
-            }
-        }
+      if (!empty($_POST['id'])) {
+          $id = intval($_POST['id']);
+          $stmt = $pdo->prepare("UPDATE habitats SET descricao = :descricao WHERE id = :id");
+          $stmt->execute([
+              'descricao' => $descricao,
+              'id' => $id
+          ]);
+      } else {
+          if (!empty($descricao)) {
+              $stmt = $pdo->prepare("INSERT INTO habitats (descricao) VALUES (:descricao)");
+              $stmt->execute(['descricao' => $descricao]);
+          }
+      }
 
-        header("Location: index.php");
-        exit;
-    }
-
+      header("Location: index.php");
+      exit;
+  }
 
     // Excluir habitat (somente se logado)
     if ($usuarioLogado && isset($_GET['delete'])) {
@@ -55,8 +38,6 @@
         if ($temAnimais == 0) {
             $stmt = $pdo->prepare("DELETE FROM habitats WHERE id = :id");
             $stmt->execute(['id' => $id]);
-            echo '<script>alert("Habitat excluído com sucesso!");</script>';
-        
         } else {
             echo '<script>alert("Não é possível excluir este habitat porque existem animais vinculados a ele.");</script>';
         }
@@ -99,14 +80,6 @@ if ($usuarioLogado && isset($_GET['edit'])) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Habitats Marinhos</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
 <div class="container mt-5">
   <h1 class="text-center mb-4">Habitats Marinhos</h1>
 
@@ -172,15 +145,11 @@ if ($usuarioLogado && isset($_GET['edit'])) {
         <?php if (!usuarioEstaLogado()): ?>
         <p class="text-center">Nenhum habitat cadastrado até o momento</p>
         <?php endif ;?>
-      <?php endif; ?>    
+      <?php endif ; ?>    
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
 <?php
-    include "../components/footer.php";
-?>
-</html>
+  include "../components/footer.php"
+?>   
