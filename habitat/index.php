@@ -4,11 +4,28 @@
     require_once "../db/conn.php";
 
     $usuarioLogado = usuarioEstaLogado();
+    $usuarioLogado = usuarioEstaLogado();
 
     // Cadastrar ou Editar habitat (somente se logado)
     if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $descricao = trim($_POST['descricao']);
+    // Cadastrar ou Editar habitat (somente se logado)
+    if ($usuarioLogado && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $descricao = trim($_POST['descricao']);
 
+        if (!empty($_POST['id'])) {
+            $id = intval($_POST['id']);
+            $stmt = $pdo->prepare("UPDATE habitats SET descricao = :descricao WHERE id = :id");
+            $stmt->execute([
+                'descricao' => $descricao,
+                'id' => $id
+            ]);
+        } else {
+            if (!empty($descricao)) {
+                $stmt = $pdo->prepare("INSERT INTO habitats (descricao) VALUES (:descricao)");
+                $stmt->execute(['descricao' => $descricao]);
+            }
+        }
         if (!empty($_POST['id'])) {
             $id = intval($_POST['id']);
             $stmt = $pdo->prepare("UPDATE habitats SET descricao = :descricao WHERE id = :id");
@@ -49,6 +66,10 @@
     $sql = "SELECT * FROM habitats ORDER BY descricao";
     $stmt = $pdo->query($sql);
     $listaHabitats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Buscar habitats
+    $sql = "SELECT * FROM habitats ORDER BY descricao";
+    $stmt = $pdo->query($sql);
+    $listaHabitats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Buscar animais por habitat
     $sqlAnimais = "SELECT h.id AS habitat_id, h.descricao AS habitat, a.nome_popular, a.nome_cientifico, a.quantidade
@@ -62,6 +83,10 @@
     foreach ($dados as $linha) {
         $habitatsAnimais[$linha['habitat']][] = $linha;
     }
+    $habitatsAnimais = [];
+    foreach ($dados as $linha) {
+        $habitatsAnimais[$linha['habitat']][] = $linha;
+    }
 // Ver se estamos editando
 $habitatEditar = null;
 if ($usuarioLogado && isset($_GET['edit'])) {
@@ -70,6 +95,7 @@ if ($usuarioLogado && isset($_GET['edit'])) {
     $stmt->execute(['id' => $idEdit]);
     $habitatEditar = $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
 
 ?>
 
@@ -153,8 +179,8 @@ if ($usuarioLogado && isset($_GET['edit'])) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
 
 <?php
     include "../components/footer.php";
 ?>
+</html>
