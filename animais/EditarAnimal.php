@@ -4,10 +4,7 @@ include "../components/nav.php";
 require_once "../db/conn.php";
 require_once "../helpers.php";
 
-if (!usuarioEstaLogado()) {
-    header("Location: ../login.php");
-    exit;
-}
+apenasLogado();
 
 $id = $_GET['id'] ?? null;
 
@@ -32,12 +29,12 @@ $habitats = $pdo->query("SELECT * FROM habitats")->fetchAll(PDO::FETCH_ASSOC);
 
 // Atualização
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome_popular = $_POST["nome_popular"];
-    $nome_cientifico = $_POST["nome_cientifico"];
-    $id_categoria = $_POST["id_categoria"];
-    $id_habitat = $_POST["id_habitat"];
-    $localizacao = $_POST["localizacao"];
-    $quantidade = $_POST["quantidade"];
+    $nome_popular = addslashes($_POST["nome_popular"]);
+    $nome_cientifico = addslashes($_POST["nome_cientifico"]);
+    $id_categoria = addslashes($_POST["id_categoria"]);
+    $id_habitat = addslashes($_POST["id_habitat"]);
+    $localizacao = addslashes($_POST["localizacao"]);
+    $quantidade = addslashes($_POST["quantidade"]);
 
     $sql = "UPDATE animais 
             SET nome_popular=?, nome_cientifico=?, id_categoria=?, id_habitat=?, localizacao=?, quantidade=? 
