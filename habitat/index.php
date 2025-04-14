@@ -109,38 +109,44 @@ if ($usuarioLogado && isset($_GET['edit'])) {
   <!-- Lista com opções de editar/excluir -->
   <div class="row justify-content-center">
     <div class="col-lg-8">
-      <?php foreach ($listaHabitats as $habitat): ?>
-        <div class="card mb-3 shadow-sm">
-          <div class="card-body d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="mb-1"><?= htmlspecialchars($habitat['descricao']) ?></h5>
-              <?php if (!empty($habitatsAnimais[$habitat['descricao']][0]['nome_popular'])): ?>
-                <ul class="mb-0">
-                  <?php foreach ($habitatsAnimais[$habitat['descricao']] as $animal): ?>
-                    <?php if ($animal['nome_popular']): ?>
-                      <li>
-                        <?= htmlspecialchars($animal['nome_popular']) ?> (<?= htmlspecialchars($animal['nome_cientifico']) ?>) - <?= $animal['quantidade'] ?> unid.
-                      </li>
-                    <?php endif; ?>
-                  <?php endforeach; ?>
-                </ul>
-              <?php else: ?>
-                <p class="text-muted mb-0">Nenhum animal neste habitat.</p>
+      <?php if ($listaHabitats): ?>
+        <?php foreach ($listaHabitats as $habitat): ?>
+          <div class="card mb-3 shadow-sm">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="mb-1"><?= htmlspecialchars($habitat['descricao']) ?></h5>
+                <?php if (!empty($habitatsAnimais[$habitat['descricao']][0]['nome_popular'])): ?>
+                  <ul class="mb-0">
+                    <?php foreach ($habitatsAnimais[$habitat['descricao']] as $animal): ?>
+                      <?php if ($animal['nome_popular']): ?>
+                        <li>
+                          <?= htmlspecialchars($animal['nome_popular']) ?> (<?= htmlspecialchars($animal['nome_cientifico']) ?>) - <?= $animal['quantidade'] ?> unid.
+                        </li>
+                      <?php endif; ?>
+                    <?php endforeach; ?>
+                  </ul>
+                <?php else: ?>
+                  <p class="text-muted mb-0">Nenhum animal neste habitat.</p>
+                <?php endif; ?>
+              </div>
+              <?php if ($usuarioLogado): ?>
+                <div class="ms-3 text-end">
+                  <a href="?edit=<?= $habitat['id'] ?>" class="btn btn-sm btn-outline-primary">Editar</a>
+                  <a href="?delete=<?= $habitat['id'] ?>"
+                    class="btn btn-sm btn-outline-danger"
+                    onclick="return confirm('Tem certeza que deseja excluir esse habitat?')">
+                    Excluir
+                  </a>
+                </div>
               <?php endif; ?>
             </div>
-            <?php if ($usuarioLogado): ?>
-              <div class="ms-3 text-end">
-                <a href="?edit=<?= $habitat['id'] ?>" class="btn btn-sm btn-outline-primary">Editar</a>
-                <a href="?delete=<?= $habitat['id'] ?>"
-                   class="btn btn-sm btn-outline-danger"
-                   onclick="return confirm('Tem certeza que deseja excluir esse habitat?')">
-                   Excluir
-                </a>
-              </div>
-            <?php endif; ?>
           </div>
-        </div>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
+      <?php else: ?> 
+        <?php if (!usuarioEstaLogado()): ?>
+        <p class="text-center">Nenhum habitat cadastrado até o momento</p>
+        <?php endif ;?>
+      <?php endif; ?>    
     </div>
   </div>
 </div>
