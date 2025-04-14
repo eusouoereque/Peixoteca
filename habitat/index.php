@@ -31,11 +31,6 @@
     // Excluir habitat (somente se logado)
     if ($usuarioLogado && isset($_GET['delete'])) {
         $id = intval($_GET['delete']);
-        header("Location: index.php");
-        exit;
-    }
-
-
         $check = $pdo->prepare("SELECT COUNT(*) FROM animais WHERE id_habitat = :id");
         $check->execute(['id' => $id]);
         $temAnimais = $check->fetchColumn();
@@ -43,12 +38,11 @@
         if ($temAnimais == 0) {
             $stmt = $pdo->prepare("DELETE FROM habitats WHERE id = :id");
             $stmt->execute(['id' => $id]);
+            echo '<script>alert("Habitat excluído com sucesso!");</script>';
+        
         } else {
-            echo "<script>alert('Não é possível excluir este habitat porque existem animais vinculados a ele.');</script>";
+            echo '<script>alert("Não é possível excluir este habitat porque existem animais vinculados a ele.");</script>';
         }
-
-        header("Location: index.php");
-        exit;
     }
 
     // Buscar habitats
